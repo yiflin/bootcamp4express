@@ -10,19 +10,38 @@ angular.module('listings').controller('ListingsController', ['$scope', 'Listings
     $scope.detailedInfo = undefined;
 
     $scope.addListing = function() {
-	  /**TODO 
+	  /**TODO
 	  *Save the article using the Listings factory. If the object is successfully 
 	  saved redirect back to the list page. Otherwise, display the error
 	 */
+	 Listings.create($scope.newListing).then(function(response) {
+	 $scope.listings.push({
+        code: $scope.newListing.code,
+        name: $scope.newListing.name,
+        address: $scope.newListing.address
+      });
+
+
+	 $scope.newListing = {};
+	 }, function(error) {
+		console.log(error);
+	 });
     };
 
-    $scope.deleteListing = function(id) {
+    $scope.deleteListing = function(index) {
 	   /**TODO
         Delete the article using the Listings factory. If the removal is successful, 
 		navigate back to 'listing.list'. Otherwise, display the error. 
        */
+	
+	Listings.delete(index._id).then(function(response) {
+	var removed = $scope.listings.indexOf(index);
+	$scope.listings.splice(removed,1);  
+	}, function(error) {
+		console.log(error);
+	});
     };
-
+	
     $scope.showDetails = function(index) {
       $scope.detailedInfo = $scope.listings[index];
     };
